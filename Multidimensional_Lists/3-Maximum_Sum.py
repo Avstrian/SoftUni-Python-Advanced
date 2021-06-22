@@ -1,21 +1,35 @@
-rows, cols = list(map(int, input().split(" ")))
-matrix = []
-biggest_sum = 0
-biggest_list = []
+def read_rows_cols():
+    return [int(x) for x in input().split()]
 
-for i in range(rows):
-    matrix.append(list(map(int, input().split(" "))))
 
-for row in range(len(matrix) - 2):
-    for col in range(len(matrix[row]) - 2):
-        current_list = [matrix[row][col], matrix[row][col+1], matrix[row][col+2],
-                        matrix[row+1][col], matrix[row+1][col+1], matrix[row+1][col+2],
-                        matrix[row+2][col], matrix[row+2][col+1], matrix[row+2][col+2]]
+def get_sub_matrix_sum(arr, row, col, size):
+    the_sum = 0
+    for r in range(row, row + size):
+        for c in range(col, col + size):
+            the_sum += arr[r][c]
+    return the_sum
 
-        if biggest_sum is None or sum(current_list) > biggest_sum:
-            biggest_sum = sum(current_list)
-            biggest_list = current_list
 
-print(f"Sum = {biggest_sum}")
-for j in range(0, len(biggest_list), 3):
-    print(biggest_list[j], biggest_list[j+1], biggest_list[j+2], sep=" ")
+def print_sum(arr, row, col, size):
+    for r in range(row, row + size):
+        for c in range(col, col + size):
+            print(arr[r][c], end=" ")
+        print()
+
+
+rows_count, cols_count = read_rows_cols()
+matrix = [read_rows_cols() for _ in range(rows_count)]
+size = 3
+best_value = get_sub_matrix_sum(matrix, 0, 0, size)
+best_position = (0, 0)
+
+for r in range(len(matrix) - size + 1):
+    for c in range(len(matrix[r]) - size + 1):
+        current_value = get_sub_matrix_sum(matrix, r, c, size)
+        if best_value < current_value:
+            best_value = current_value
+            best_position = (r, c)
+
+print(f"Sum = {best_value}")
+best_row, best_col = best_position
+print_sum(matrix, best_row, best_col, size)
